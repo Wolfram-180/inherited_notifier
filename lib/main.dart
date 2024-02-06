@@ -33,9 +33,10 @@ class SliderData extends ChangeNotifier {
 final sliderData = SliderData();
 
 class SliderInheritedNotifier extends InheritedNotifier<SliderData> {
-  SliderInheritedNotifier({
+  const SliderInheritedNotifier({
     Key? key,
     required Widget child,
+    required SliderData sliderData,
   }) : super(
           key: key,
           notifier: sliderData,
