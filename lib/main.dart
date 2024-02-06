@@ -43,15 +43,12 @@ class SliderInheritedNotifier extends InheritedNotifier<SliderData> {
           child: child,
         );
 
-  static SliderData of(BuildContext context) {
-    final result =
-        context.dependOnInheritedWidgetOfExactType<SliderInheritedNotifier>();
-    if (result == null) {
-      throw FlutterError(
-          'SliderInheritedNotifier.of() called with a context that does not contain a SliderInheritedNotifier.');
-    }
-    return result.notifier!;
-  }
+  static double of(BuildContext context) =>
+      context
+          .dependOnInheritedWidgetOfExactType<SliderInheritedNotifier>()
+          ?.notifier
+          ?.value ??
+      0.0;
 }
 
 class HomePage extends StatelessWidget {
@@ -63,26 +60,39 @@ class HomePage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Home page'),
       ),
-      body: Column(
-        children: [
-          Slider(
-            value: 0.0,
-            onChanged: (double value) {},
-          ),
-          Row(
-            mainAxisSize: MainAxisSize.max,
+      body: SliderInheritedNotifier(
+        sliderData: sliderData,
+        child: Builder(builder: (context) {
+          return Column(
             children: [
-              Container(
-                height: 100,
-                color: Colors.red,
+              Slider(
+                value: SliderInheritedNotifier.of(context),
+                onChanged: (double value) {
+                  sliderData.value = value;
+                },
               ),
-              Container(
-                height: 100,
-                color: Colors.green,
+              Row(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Opacity(
+                    opacity: SliderInheritedNotifier.of(context),
+                    child: Container(
+                      height: 300,
+                      color: Colors.red,
+                    ),
+                  ),
+                  Opacity(
+                    opacity: SliderInheritedNotifier.of(context),
+                    child: Container(
+                      height: 300,
+                      color: Colors.green,
+                    ),
+                  ),
+                ].expandEqually().toList(),
               ),
-            ].expandEqually().toList(),
-          ),
-        ],
+            ],
+          );
+        }),
       ),
     );
   }
